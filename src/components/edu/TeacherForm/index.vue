@@ -42,40 +42,28 @@
       </el-form-item>
       <el-form-item label="级别" :label-width="formLabelWidth">
         <el-slider v-model="dataForm.level" show-input show-stops :min="1" :max="10" label="级别"></el-slider>
-        <!-- <el-input v-model="dataForm.level"></el-input> -->
       </el-form-item>
       <el-form-item label="职称" :label-width="formLabelWidth">
         <el-input v-model="dataForm.career"></el-input>
       </el-form-item>
       <el-form-item label="简介" :label-width="formLabelWidth">
-        <el-input v-model="dataForm.introduce"></el-input>
+        <el-input v-model="dataForm.introduce" type="textarea"></el-input>
       </el-form-item>
+      <!-- 图片上传 -->
       <el-form-item label="头像" :label-width="formLabelWidth">
-        <el-input v-model="dataForm.avatar"></el-input>
+        <el-upload
+          class="avatar-uploader"
+          action="http://localhost:8002/oss/upload/file"
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload">
+          <img v-if="dataForm.avatar" :src="dataForm.avatar" class="avatar" :fit="cover">
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
       </el-form-item>
       <el-form-item label="排序" :label-width="formLabelWidth">
         <el-slider v-model="dataForm.weight" show-input :min="1" :max="100" ></el-slider>
       </el-form-item>
-      <!-- 图片上传 -->
-      <!-- <el-form-item label="图片链接" :label-width="formLabelWidth">
-        <el-upload
-          class="avatar-uploader"
-          action=""
-          :show-file-list="false"
-          :http-request="handleUploadImage"
-          :on-success="handleAvatarSuccess"
-          :before-upload="beforeAvatarUpload">
-          <img v-if="dataForm.image_url" :src="dataForm.image_url" class="avatar">
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
-      </el-form-item> -->
-      <!-- <el-form-item label="是否启用" :label-width="formLabelWidth">
-        <el-switch
-          v-model="dataForm.enable"
-          active-color="#13ce66"
-          inactive-color="#ff4949">
-        </el-switch>
-      </el-form-item> -->
     </el-form>
     <!-- END: 表单 -->
     <div slot="footer" class="dialog-footer">
@@ -104,6 +92,21 @@ export default {
 
   },
   methods: {
+    handleAvatarSuccess(res, file) {
+      this.dataForm.avatar = res.data.url
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg';
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      // if (!isJPG) {
+      //   this.$message.error('上传头像图片只能是 JPG 格式!');
+      // }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!');
+      }
+      return isLt2M;
+    },
     /* 打开弹窗，确定标题 */
     openDialog(id) {
       if (id) {
@@ -185,5 +188,27 @@ export default {
 </script>
 
 <style>
-
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
 </style>
