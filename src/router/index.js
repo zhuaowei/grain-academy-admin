@@ -36,13 +36,19 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/edu/teacher',
     name: 'Example',
-    meta: { title: '讲师管理', icon: 'el-icon-s-help' },
+    meta: { title: '课程相关', icon: 'el-icon-s-help' },
     children: [
       {
         path: 'teacher',
         name: 'Teacher',
         component: () => import('@/views/edu/teacher/index'),
         meta: { title: '讲师列表', icon: 'table' }
+      },
+      {
+        path: 'subject',
+        name: 'Subject',
+        component: () => import('@/views/edu/subject/index'),
+        meta: { title: '分类列表', icon: 'table' }
       }
     ]
   },
